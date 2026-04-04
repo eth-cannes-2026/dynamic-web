@@ -29,7 +29,7 @@ function hexToBytes(hex) {
   return b;
 }
 
-function render(val) {
+function render(val,id) {
   if (!wasm) return;
   const addr = val.trim();
   if (addr.length < 4) return;
@@ -43,7 +43,7 @@ function render(val) {
   exp.run_face();
 
   const outPtr = exp.get_out_buf();
-  const ctx = document.getElementById('c').getContext('2d');
+  const ctx = document.getElementById(id).getContext('2d');
   const img = ctx.createImageData(64, 64);
   for (let y = 0; y < 64; y++) {
     for (let x = 0; x < 64; x++) {

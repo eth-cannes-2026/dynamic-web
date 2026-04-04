@@ -2,6 +2,7 @@ import { FormEvent, useMemo, useState } from "react";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { isEthereumWallet } from "@dynamic-labs/ethereum";
 import { formatEther, isAddress, parseEther } from "viem";
+import { WalletShareCard } from "./WalletShare";
 
 type SendEthProps = {
     defaultRecipient?: string;
@@ -129,6 +130,7 @@ export function SendEthWithDynamic({
                     <strong>Connected wallet:</strong>{" "}
                     {walletAddress || "Click refresh wallet info"}
                 </p>
+                <WalletShareCard />
                 <p>
                     <strong>Balance:</strong> {balance ? `${balance} ETH` : "-"}
                 </p>
@@ -145,7 +147,7 @@ export function SendEthWithDynamic({
                         value={recipient}
                         onChange={(e) => {
                             setRecipient(e.target.value);
-                            window.render(e.target.value);
+                            window.render(e.target.value,'c');
                         }}
                         placeholder="0x..."
                         className="mt-1 w-full rounded-md border px-3 py-2"

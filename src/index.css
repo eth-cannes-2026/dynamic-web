@@ -66,4 +66,4 @@ button:focus-visible {
 }
 
 
-canvas{display:block;width:256px;height:256px;image-rendering:pixelated;border:1px solid #ccc;border-radius:6px}
+#c{display:block;width:256px;height:256px;image-rendering:pixelated;border:1px solid #ccc;border-radius:6px}
