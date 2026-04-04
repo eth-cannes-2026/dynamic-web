@@ -169,7 +169,6 @@ export function WalletShareCard() {
                         <div className="rounded-xl border p-4 space-y-2">
                             <div className="text-sm opacity-70">Primary wallet address</div>
                             <div className="text-lg font-medium break-all">{address || "-"}</div>
-                            <div className="text-sm opacity-60">{shortenAddress(address)}</div>
                         </div>
 
                         <div className="flex flex-wrap gap-3">
