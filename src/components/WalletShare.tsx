@@ -109,12 +109,53 @@ export function WalletShareCard() {
         try {
             setSharing(true);
 
-            if (navigator.share) {
+            const sourceCanvas = document.getElementById(canvasId) as HTMLCanvasElement | null;
+            if (!sourceCanvas) {
+                throw new Error(`Canvas #${canvasId} not found`);
+            }
+
+            const out = document.createElement("canvas");
+            out.width = 256;
+            out.height = 256;
+
+            const ctx = out.getContext("2d");
+            if (!ctx) {
+                throw new Error("Cannot create share canvas");
+            }
+
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(sourceCanvas, 0, 0, 256, 256);
+
+            const blob = await new Promise<Blob | null>((resolve) => {
+                out.toBlob((value) => resolve(value), "image/png");
+            });
+
+            if (!blob) {
+                throw new Error("Failed to generate image blob");
+            }
+
+            const file = new File([blob], `wallet-${address}.png`, {
+                type: "image/png",
+            });
+
+            if (
+                navigator.canShare &&
+                navigator.canShare({
+                    files: [file],
+                })
+            ) {
                 await navigator.share({
                     title: "My wallet address",
-                    text: `My wallet address: ${address}`,
+                    text: address,
+                    files: [file],
                 });
+                return;
             }
+
+            await navigator.share({
+                title: "My wallet address",
+                text: address,
+            });
         } catch (error) {
             console.error(error);
         } finally {
