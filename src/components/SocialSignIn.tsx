@@ -5,7 +5,7 @@ import {
   useSocialAccounts,
 } from '@dynamic-labs/sdk-react-core';
 import { ProviderEnum } from '@dynamic-labs/types';
-import { FarcasterIcon, GoogleIcon, TwitterIcon } from '@dynamic-labs/iconic';
+import { FarcasterIcon, GithubIcon, GoogleIcon } from '@dynamic-labs/iconic';
 import { SendEthWithDynamic } from './SendEth';
 
 const SocialSignIn = () => {
@@ -17,16 +17,16 @@ const SocialSignIn = () => {
         <p>Log in or sign up</p>
 
         <button onClick={() => signInWithSocialAccount(ProviderEnum.Farcaster)}>
-          <FarcasterIcon />
+          <FarcasterIcon style={{ width: 16, height: 16 }} />
           Sign in with Farcaster
         </button>
         <button onClick={() => signInWithSocialAccount(ProviderEnum.Google)}>
-          <GoogleIcon />
+          <GoogleIcon style={{ width: 16, height: 16 }} />
           Sign in with Google
         </button>
-        <button onClick={() => signInWithSocialAccount(ProviderEnum.Twitter)}>
-          <TwitterIcon />
-          Sign in with Twitter
+        <button onClick={() => signInWithSocialAccount(ProviderEnum.Github)}>
+          <GithubIcon style={{ width: 16, height: 16 }} />
+          Sign in with Github
         </button>
         {isProcessing && <span className='processing'>Processing...</span>}
         {error && <span className='error'>{error.message}</span>}
@@ -51,7 +51,7 @@ export const SocialSignInView: FC = () => {
   const { user } = useDynamicContext();
 
   return (
-    <div style={{ overflowY: 'scroll', display: 'flex', flexDirection: 'column', alignItems: 'center',justifyContent:'center', gap: 20 }}>
+    <div style={{ overflowY: 'scroll', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20 }}>
       {user ? <LoggedInUser /> : <SocialSignIn />}
     </div>
   );
