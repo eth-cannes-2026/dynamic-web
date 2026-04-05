@@ -12,7 +12,25 @@ createRoot(document.getElementById('root')!).render(
     <DynamicContextProvider
       settings={{
         environmentId: clientId,
-        walletConnectors: [EthereumWalletConnectors]
+        walletConnectors: [EthereumWalletConnectors],
+        overrides: {
+          evmNetworks: [
+            {
+              chainId: 11155111,
+              chainName: "Sepolia",
+              iconUrls: ["https://app.dynamic.xyz/assets/networks/eth.svg"],
+              nativeCurrency: {
+                decimals: 18,
+                name: "Sepolia Ether",
+                symbol: "ETH",
+              },
+              networkId: 11155111,
+              rpcUrls: ["https://sepolia.drpc.org"],
+              blockExplorerUrls: ["https://sepolia.etherscan.io"],
+              vanityName: "Sepolia",
+            },
+          ],
+        },
       }}
     >
       <App />

@@ -3,6 +3,7 @@ import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { isEthereumWallet } from "@dynamic-labs/ethereum";
 import { formatEther, isAddress, parseEther } from "viem";
 import { WalletShareCard } from "./WalletShare";
+import { useDynamicFaceInjector } from "../hooks/useDynamicFaceInjector";
 
 type SendEthProps = {
     defaultRecipient?: string;
@@ -13,6 +14,8 @@ export function SendEthWithDynamic({
     defaultRecipient = "",
     defaultAmount = "",
 }: SendEthProps) {
+    const { setRecipient:setDynamicRecipient } = useDynamicFaceInjector();
+
     const { primaryWallet } = useDynamicContext();
 
     const [recipient, setRecipient] = useState(defaultRecipient);
@@ -72,6 +75,7 @@ export function SendEthWithDynamic({
 
         try {
             setStatus("sending");
+            setDynamicRecipient(recipient);
 
             const publicClient = await primaryWallet.getPublicClient();
             const walletClient = await primaryWallet.getWalletClient();

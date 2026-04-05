@@ -7,6 +7,7 @@ import {
 import { ProviderEnum } from '@dynamic-labs/types';
 import { FarcasterIcon, GithubIcon, GoogleIcon } from '@dynamic-labs/iconic';
 import { SendEthWithDynamic } from './SendEth';
+import { useDynamicFaceInjector } from '../hooks/useDynamicFaceInjector';
 
 const SocialSignIn = () => {
   const { error, isProcessing, signInWithSocialAccount } = useSocialAccounts();
@@ -37,6 +38,7 @@ const SocialSignIn = () => {
 
 const LoggedInUser = () => {
   const { user } = useDynamicContext();
+  useDynamicFaceInjector();
 
   return (
     <>
