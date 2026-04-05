@@ -77,14 +77,74 @@ function tryInject(shadowRoot: ShadowRoot, address: string) {
     console.log("[FaceInjector] ✅ injected for", address);
 }
 
+// Dans useDynamicFaceInjector.ts, ajoute cette fonction
+
+function tryInjectQrLogo(shadowRoot: ShadowRoot, address: string) {
+    if (shadowRoot.querySelector("#wallet-face-qr")) return;
+
+    // Le logo centré dans le QR code
+    const qrIcon = shadowRoot.querySelector(".qrcode__icon");
+    if (!qrIcon) return;
+
+    // Render face
+    const canvasId = "dynamic-face-canvas-qr";
+    let canvas = document.getElementById(canvasId) as HTMLCanvasElement | null;
+    if (!canvas) {
+        canvas = document.createElement("canvas");
+        canvas.id = canvasId;
+        canvas.width = 64;
+        canvas.height = 64;
+        canvas.style.display = "none";
+        document.body.appendChild(canvas);
+    }
+
+    try {
+        window.render(address, canvasId);
+    } catch {
+        return;
+    }
+
+    // Scale to the icon size (~40px)
+    const scaled = document.createElement("canvas");
+    scaled.width = scaled.height = 40;
+    const ctx = scaled.getContext("2d")!;
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(canvas, 0, 0, 40, 40);
+
+    const img = document.createElement("img");
+    img.id = "wallet-face-qr";
+    img.src = scaled.toDataURL("image/png");
+    img.style.cssText = `
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px; height: 40px;
+    image-rendering: pixelated;
+    border-radius: 6px;
+    border: 2px solid var(--dynamic-base-1);
+    background: var(--dynamic-base-1);
+  `;
+
+    // Hide the original Dynamic logo, insert ours
+    (qrIcon as HTMLElement).style.display = "none";
+    qrIcon.parentElement?.appendChild(img);
+
+    console.log("[FaceInjector] ✅ QR logo injected for", address);
+}
+
 export function useDynamicFaceInjector() {
     const { primaryWallet } = useDynamicContext();
     const recipientRef = useRef<string | null>(null);
     const innerObserversRef = useRef<MutationObserver[]>([]);
+    const walletAddressRef = useRef<string | null>(null);
 
     const setRecipient = (addr: string) => {
         recipientRef.current = addr;
     };
+
+    useEffect(() => {
+        walletAddressRef.current = primaryWallet?.address ?? null;
+    }, [primaryWallet]);
 
 
     // Patch window.ethereum directly — Dynamic's viem transport uses it under the hood
@@ -131,12 +191,15 @@ export function useDynamicFaceInjector() {
 
                 const inner = new MutationObserver(() => {
                     if (recipientRef.current) tryInject(shadowRoot, recipientRef.current);
+                    if (walletAddressRef.current) tryInjectQrLogo(shadowRoot, walletAddressRef.current);
+
                 });
                 (inner as any)._shadowRoot = shadowRoot;
                 inner.observe(shadowRoot, { childList: true, subtree: true });
                 innerObserversRef.current.push(inner);
 
                 if (recipientRef.current) tryInject(shadowRoot, recipientRef.current);
+                if (walletAddressRef.current) tryInjectQrLogo(shadowRoot, walletAddressRef.current);
             });
 
             if (hosts.length === 0 && innerObserversRef.current.length > 0) {
@@ -144,6 +207,7 @@ export function useDynamicFaceInjector() {
                 innerObserversRef.current = [];
                 recipientRef.current = null;
                 document.getElementById("dynamic-face-canvas")?.remove();
+                document.getElementById("dynamic-face-canvas-qr")?.remove(); // ← ajoute ça
             }
         });
 
