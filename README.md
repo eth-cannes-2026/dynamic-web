@@ -49,3 +49,6 @@ export default tseslint.config({
 })
 ```
 # dynamic-web
+
+
+create an env file base on env example and set your client id
